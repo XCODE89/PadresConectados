@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Users, Plus, Mail, Phone, User, Search } from 'lucide-react';
+import { Users, Plus, Mail, Phone, User, Search, Upload } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import StudentForm from './StudentForm';
+import ExcelUpload from './ExcelUpload';
 
 const StudentsList: React.FC = () => {
   const { students } = useData();
   const [showForm, setShowForm] = useState(false);
+  const [showExcelUpload, setShowExcelUpload] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredStudents = students.filter(student =>
@@ -22,13 +24,22 @@ const StudentsList: React.FC = () => {
           <p className="text-gray-600">Administra la lista de alumnos y sus apoderados</p>
         </div>
         
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Agregar Alumno
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowExcelUpload(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center gap-2"
+          >
+            <Upload className="h-4 w-4" />
+            Cargar Excel
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Agregar Alumno
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -139,6 +150,11 @@ const StudentsList: React.FC = () => {
       {/* Student Form Modal */}
       {showForm && (
         <StudentForm onClose={() => setShowForm(false)} />
+      )}
+
+      {/* Excel Upload Modal */}
+      {showExcelUpload && (
+        <ExcelUpload onClose={() => setShowExcelUpload(false)} />
       )}
     </div>
   );

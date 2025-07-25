@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { GraduationCap, User, Lock, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import AdminRegister from './AdminRegister';
 
 const Login: React.FC = () => {
   const { user, login } = useAuth();
@@ -9,9 +10,14 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   if (user) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  if (showRegister) {
+    return <AdminRegister onBackToLogin={() => setShowRegister(false)} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,18 +108,34 @@ const Login: React.FC = () => {
 
           {/* Demo Credentials */}
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-4">Credenciales de demostración:</h3>
-            <div className="space-y-2 text-sm">
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <strong>Administrador:</strong> admin / admin123
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-4">
+                ¿Quieres crear un grupo escolar?
+              </p>
+              <button
+                onClick={() => setShowRegister(true)}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors duration-200 mb-4"
+              >
+                Registrarse como Administrador
+              </button>
+              
+              <details className="text-left">
+                <summary className="text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 mb-2">
+                  Ver credenciales de demostración
+                </summary>
+                <div className="space-y-2 text-sm">
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <strong>Administrador:</strong> admin / admin123
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <strong>Apoderado:</strong> padre1 / pass123
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <strong>Otros apoderados:</strong> padre2, padre3 / pass123
+                  </div>
+                </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <strong>Apoderado:</strong> padre1 / pass123
-              </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <strong>Otros apoderados:</strong> padre2, padre3 / pass123
-              </div>
-            </div>
+            </details>
           </div>
         </div>
       </div>

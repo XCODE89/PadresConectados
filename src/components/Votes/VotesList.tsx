@@ -5,11 +5,13 @@ import { useData } from '../../context/DataContext';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import VoteForm from './VoteForm';
+import VoteDetail from './VoteDetail';
 
 const VotesList: React.FC = () => {
   const { user } = useAuth();
   const { votes, submitVote } = useData();
   const [showForm, setShowForm] = useState(false);
+  const [selectedVote, setSelectedVote] = useState<any>(null);
 
   const handleVote = (voteId: string, optionId: string) => {
     if (!user) return;
@@ -63,7 +65,7 @@ const VotesList: React.FC = () => {
           const canShowResults = vote.allowViewResults || userHasVoted || user?.role === 'admin';
 
           return (
-            <div key={vote.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div key={vote.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{vote.title}</h3>
@@ -81,6 +83,14 @@ const VotesList: React.FC = () => {
                       <span>{totalVotes} votos</span>
                     </div>
                   </div>
+                  {user?.role === 'admin' && (
+                    <button
+                      onClick={() => setSelectedVote(vote)}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Ver detalles
+                    </button>
+                  )}
 
                   {voteIsActive && !userHasVoted && user?.role === 'parent' && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
@@ -168,6 +178,14 @@ const VotesList: React.FC = () => {
       {/* Vote Form Modal */}
       {showForm && (
         <VoteForm onClose={() => setShowForm(false)} />
+      )}
+
+      {/* Vote Detail Modal */}
+      {selectedVote && (
+        <VoteDetail 
+          vote={selectedVote} 
+          onClose={() => setSelectedVote(null)} 
+        />
       )}
     </div>
   );

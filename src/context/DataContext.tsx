@@ -17,6 +17,7 @@ interface DataContextType {
   addNotice: (notice: Omit<Notice, 'id' | 'read'>) => void;
   markNoticeAsRead: (noticeId: string, userId: string) => void;
   addStudent: (student: Omit<Student, 'id'>) => void;
+  addMultipleStudents: (students: Omit<Student, 'id' | 'courseId' | 'parentId'>[]) => void;
 }
 
 const DataContext = createContext<DataContextType | null>(null);
@@ -128,6 +129,19 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveToStorage('students', updatedStudents);
   };
 
+  const addMultipleStudents = (studentsData: Omit<Student, 'id' | 'courseId' | 'parentId'>[]) => {
+    const newStudents = studentsData.map((studentData, index) => ({
+      ...studentData,
+      id: (Date.now() + index).toString(),
+      courseId: '1',
+      parentId: (Date.now() + index + 1000).toString()
+    }));
+    
+    const updatedStudents = [...students, ...newStudents];
+    setStudents(updatedStudents);
+    saveToStorage('students', updatedStudents);
+  };
+
   return (
     <DataContext.Provider value={{
       courses,
@@ -143,7 +157,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       submitVote,
       addNotice,
       markNoticeAsRead,
-      addStudent
+      addStudent,
+      addMultipleStudents
     }}>
       {children}
     </DataContext.Provider>

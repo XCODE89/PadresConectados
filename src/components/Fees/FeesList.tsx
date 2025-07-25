@@ -5,11 +5,13 @@ import { useData } from '../../context/DataContext';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import FeeForm from './FeeForm';
+import FeeDetail from './FeeDetail';
 
 const FeesList: React.FC = () => {
   const { user } = useAuth();
   const { fees, students, addPayment } = useData();
   const [showForm, setShowForm] = useState(false);
+  const [selectedFee, setSelectedFee] = useState<any>(null);
 
   const myStudent = students.find(s => s.parentId === user?.id);
 
@@ -70,7 +72,11 @@ const FeesList: React.FC = () => {
           const isOverdue = new Date(fee.dueDate) < new Date();
           
           return (
-            <div key={fee.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+            <div 
+              key={fee.id} 
+              className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+              onClick={() => user?.role === 'admin' ? setSelectedFee(fee) : undefined}
+            >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{fee.title}</h3>
@@ -169,6 +175,14 @@ const FeesList: React.FC = () => {
       {/* Fee Form Modal */}
       {showForm && (
         <FeeForm onClose={() => setShowForm(false)} />
+      )}
+
+      {/* Fee Detail Modal */}
+      {selectedFee && (
+        <FeeDetail 
+          fee={selectedFee} 
+          onClose={() => setSelectedFee(null)} 
+        />
       )}
     </div>
   );
